@@ -57,3 +57,98 @@ export default function RouteChange({
 
   return <>{children}</>;
 }
+
+// "use client";
+
+// import { usePathname, useRouter } from "next/navigation";
+// import { useEffect, useRef, useState } from "react";
+// import Loader from "./loader";
+
+// export default function RouteChange({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   const pathname = usePathname();
+//   const router = useRouter();
+//   const [loading, setLoading] = useState(false);
+//   const currentPath = useRef(pathname);
+//   const navigationInProgress = useRef(false);
+
+//   // --- Handle internal link clicks ---
+//   useEffect(() => {
+//     const handleClick = (e: MouseEvent) => {
+//       const anchor = (e.target as HTMLElement).closest("a");
+//       if (!anchor) return;
+
+//       const href = anchor.getAttribute("href");
+//       if (!href) return;
+
+//       const isExternal =
+//         href.startsWith("http://") ||
+//         href.startsWith("https://") ||
+//         href.startsWith("//");
+//       const isHashOnly = href.startsWith("#");
+//       const isSamePage = href === currentPath.current;
+
+//       if (isExternal || isHashOnly || isSamePage) return;
+
+//       // Show loader
+//       navigationInProgress.current = true;
+//       setLoading(true);
+//     };
+
+//     document.addEventListener("click", handleClick);
+//     return () => document.removeEventListener("click", handleClick);
+//   }, []);
+
+//   // --- Handle programmatic navigation ---
+//   useEffect(() => {
+//     const originalPush = router.push;
+//     const originalReplace = router.replace;
+
+//     // Wrap push
+//     router.push = (url: string, options?: any) => {
+//       navigationInProgress.current = true;
+//       setLoading(true);
+//       return originalPush(url, options);
+//     };
+
+//     // Wrap replace
+//     router.replace = (url: string, options?: any) => {
+//       navigationInProgress.current = true;
+//       setLoading(true);
+//       return originalReplace(url, options);
+//     };
+
+//     return () => {
+//       router.push = originalPush;
+//       router.replace = originalReplace;
+//     };
+//   }, [router]);
+
+//   // --- Hide loader once route updates ---
+//   useEffect(() => {
+//     if (pathname !== currentPath.current) {
+//       currentPath.current = pathname;
+//       navigationInProgress.current = false;
+//       setLoading(false);
+//     }
+//   }, [pathname]);
+
+//   // --- Cancel loader if user quickly navigates elsewhere ---
+//   useEffect(() => {
+//     const timeout = setTimeout(() => {
+//       if (navigationInProgress.current) {
+//         navigationInProgress.current = false;
+//         setLoading(false);
+//       }
+//     }, 5000); // Cancel after 5s just in case
+
+//     return () => clearTimeout(timeout);
+//   }, [loading]);
+
+//   if (loading) return <Loader />;
+
+//   return <>{children}</>;
+// }
